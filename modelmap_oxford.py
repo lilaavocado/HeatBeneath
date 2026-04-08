@@ -87,10 +87,10 @@ buildings = buildings[buildings["total_area_m2"] >= min_total_area]
 # Calculation of Energy Use
 
 EUI = {
-    "residential": 180,
-    "commercial": 250,
-    "education": 220,
-    "other": 150
+    "residential": 180, # guess
+    "commercial": 250, # guess
+    "education": 220, # guess
+    "other": 150 # guess
 }
 
 heating_share = {
@@ -108,10 +108,10 @@ buildings["heating_energy"] = buildings.apply(
 # Heating energy per building
 
 energy_shares = {
-    "other":      {"Gas": 0.8, "Electric": 0.1, "Renewable": 0.05, "Divers": 0.05},
-    "education":  {"Gas": 0.85, "Electric": 0.10, "Renewable": 0.03, "Divers": 0.02},
-    "residential":{"Gas": 0.75, "Electric": 0.12, "Renewable": 0.07, "Divers": 0.06},
-    "commercial": {"Gas": 0.90, "Electric": 0.06, "Renewable": 0.02, "Divers": 0.02},
+    "other":      {"Gas": 0.8, "Electric": 0.1, "Renewable": 0.05, "Divers": 0.05}, # guess on Census 2021
+    "education":  {"Gas": 0.85, "Electric": 0.10, "Renewable": 0.03, "Divers": 0.02}, # guess on Census 2021
+    "residential":{"Gas": 0.75, "Electric": 0.12, "Renewable": 0.07, "Divers": 0.06}, # Census 2021, https://www.oxford.gov.uk/downloads/file/1353/census-2021-tenure-accomodation-central-heating-and-car-availability
+    "commercial": {"Gas": 0.90, "Electric": 0.06, "Renewable": 0.02, "Divers": 0.02}, # guess on Census 2021
 }
 
 def assign_heating_type(row):
@@ -123,8 +123,8 @@ buildings["heating_type"] = buildings.apply(assign_heating_type, axis=1)
 # CO2 before
 
 co2e_factors = {
-    "Gas": 0.203, # conversion factor for UK, Natural Gas
-    "Electric": 0.177, # conversion factor for UK 
+    "Gas": 0.203, # conversion factor for UK, Natural Gas, https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025
+    "Electric": 0.177, # conversion factor for UK, https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025
     "Renewable": 0.02, # guess
     "Divers": 0.185 # guess
 }
@@ -173,7 +173,7 @@ for btype in ["residential", "commercial", "education", "other"]:
 
 energy_df = pd.DataFrame(energy_summary)
 
-print("\nHEIZENERGIE nach Gebäudetyp und Heizsystem:")
+print("\nHeating energy by building type and heating system:")
 print(energy_df)
 
 # Aggregation
@@ -259,7 +259,7 @@ total_co2_before = buildings["CO2_before"].sum()
 total_co2_after = buildings["CO2_after"].sum()
 
 print("\n==============================")
-print(" GESAMTVERGLEICH")
+print(" Comparison")
 print("==============================")
 print(f"Total heating energy (kWh/day): {total_energy_day:,.0f}")
 print(f"CO2 BEFORE (kg/day): {total_co2_before:,.0f}")
@@ -292,7 +292,7 @@ summary_df = pd.DataFrame(summary)
 
 # Example residential
 
-house_area_m2 = 100       # guess for a typical house
+house_area_m2 = 100 # guess for a typical house
 levels = 2                 
 total_area = house_area_m2 * levels
 
@@ -325,7 +325,7 @@ savings_month = cost_before_month - cost_after_month
 reduction_pct = 100 * (co2_before - co2_after) / co2_before
 
 print("\n==============================")
-print("Single House Example")
+print("Single House Example (Residential)")
 print("==============================")
 print(f"Area: {total_area} m² ({levels} Levels)")
 print(f"Heating Energy: {heating_energy_yr:,.0f} kWh")
@@ -336,10 +336,6 @@ print(f"Costs before (Gas): £{cost_before_month:.2f}/Month")
 print(f"Costs after (Network + HP): £{cost_after_month:.2f}/Month")
 print(f"Monthly Savings: £{savings_month:.2f}")
 print(f"Percentage Savings: {100 * savings_month / cost_before_month:.1f}%")
-
-
-
-
 
 
 
